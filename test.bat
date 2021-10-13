@@ -5,6 +5,7 @@ set ldt=%ldt:~0,4%-%ldt:~4,2%-%ldt:~6,2% %ldt:~8,2%:%ldt:~10,2%
 py -m build
 py -m twine upload -u btpv -p %testpypi% --repository testpypi dist/*
 rmdir dist /S /Q
+rmdir src/zermeloapi.egg-info /S /Q
 git add *
 git commit -m "test build %ldt%"
 git push -u origin main
