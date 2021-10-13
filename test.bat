@@ -5,5 +5,5 @@ py -m build
 py -m twine upload dist/*
 rmdir dist /s
 git add *
-git commit -m 'test build %ldt%'
+git commit -m "test build %ldt%"
 git push -u origin main
