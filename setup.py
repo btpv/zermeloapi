@@ -1,11 +1,14 @@
+from os import read
 import setuptools
 from datetime import datetime
+
 def get_date():
     year, week = datetime.today().strftime("%Y %W").split(" ")
     return year, week
+with open("src\zermeloapi\__init__.py", "r", encoding="utf-8") as fh:
+    initpy = fh.read()
 with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read().replace("this_week",get_date()[1]).replace("this_year",get_date()[0])
-print(long_description)
+    long_description = fh.read().replace("this_week",get_date()[1]).replace("this_year",get_date()[0]).replace("__init__.py",initpy)
 setuptools.setup(
     name="zermeloapi",
     version=str(datetime.today()).split('.')[0].replace('-','.').replace(':','.').replace(' ','.'),
