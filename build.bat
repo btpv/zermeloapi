@@ -5,6 +5,6 @@ set ldt=%ldt:~0,4%%ldt:~4,2%%ldt:~6,2%%ldt:~8,2%%ldt:~10,2%
 @REM py -m twine upload dist/*
 @REM rmdir dist /s
 git add *
-git commit -m build%ldt%
+git commit -m "build %ldt%"
 git push -u origin main
 echo %ldt%
