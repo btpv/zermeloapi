@@ -138,7 +138,7 @@ class zermelo:
             for les in day[0]:
                 if (les[4][0]["code"] < 3000 and les[4][0]["code"] >= 2000):
                     result += ("les: "+les[0].ljust(10, " ")+"lokaal: "+("📷"if(les[5])else (les[3][2:-2]if(
-                        len(les[3][2:-2]) > 0)else "————")).ljust(5, " ")+"\tstart: "+les[1]+"\tend: "+les[2]+'\n')
+                        len(les[3][2:-2]) > 0)else "————")).ljust(10, " ")+"\tstart: "+les[1]+"\tend: "+les[2]+'\n')
                     pass
             result += ("\n\n")
         return result
