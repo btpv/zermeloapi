@@ -1,0 +1,28 @@
+[
+    {
+        "label": "setuptools",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "get_date",
+        "kind": 2,
+        "importPath": "setup",
+        "description": "setup",
+        "peekOfCode": "def get_date():\n    year, week = datetime.today().strftime(\"%Y %W\").split(\" \")\n    return year, week\nwith open(\"README.md\", \"r\", encoding=\"utf-8\") as fh:\n    long_description = fh.read().replace(\"this_week\",get_date()[1]).replace(\"this_year\",get_date()[0])\nprint(long_description)\nsetuptools.setup(\n    name=\"zermeloapi\",\n    version=str(datetime.today()).split('.')[0].replace('-','.').replace(':','.').replace(' ','.'),\n    author=\"b.vill\",",
+        "detail": "setup",
+        "documentation": {}
+    }
+]

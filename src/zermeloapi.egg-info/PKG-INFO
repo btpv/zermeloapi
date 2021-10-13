@@ -1,3 +1,19 @@
+Metadata-Version: 2.1
+Name: zermeloapi
+Version: 2021.10.13.10.1.14
+Summary: zermelo api
+Home-page: UNKNOWN
+Author: b.vill
+Author-email: villeriusborro@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.0
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # zermelo api
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
@@ -31,7 +47,7 @@ again if u wand to u can give the school and username again but u don't need to 
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=this_week)`,`get_schedule(year=this_year)`or`get_schedule(year=this_year,week=this_week)`
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=41)`,`get_schedule(year=2021)`or`get_schedule(year=2021,week=41)`
 ## sort_schedule
 ```python
 sorted_schedule = zermelo.sort_schedule()
@@ -200,3 +216,4 @@ class zermelo:
             readable = self.readable_schedule(days=days, year=year, week=week)
         print(readable)
 ```
+
