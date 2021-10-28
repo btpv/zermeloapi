@@ -7,7 +7,6 @@ class zermelo:
     TimeToAddToUtc = 0
     access_token = ''
 
-
     def __init__(self, school, username, password, teacher=False, version=3):
         self.school = school
         self.username = username
@@ -16,7 +15,6 @@ class zermelo:
         self.version = 'v'+str(version)
         self.TimeToAddToUtc = self.get_date()[2]
         self.access_token = self.get_access_token()
-
 
     def get_date(self):
         from datetime import date, datetime
@@ -27,11 +25,9 @@ class zermelo:
             str(datetime.now().astimezone()).split("+")[1].split(":")[0])
         return year, week, TimeToAddToUtc
 
-
     def refresh(self):
         self.access_token = self.get_access_token()
         return(self.expires_in)
-
 
     def get_token(self, school=None, username=None, password=None):
         if(school == None):
@@ -43,7 +39,7 @@ class zermelo:
         import requests
         url = 'https://'+school+'.zportal.nl/api/'+self.version+'/oauth'
         myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
-                'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
+                 'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
         x = requests.post(url, data=myobj)
         respons = x.text
         start = respons.find("code=") + len("code=")
@@ -63,7 +59,6 @@ class zermelo:
         self.interfaceVersion = respons[start:end]
         return(token)
 
-
     def get_access_token(self, school=None, token=None):
         if(school == None):
             school = self.school
@@ -72,13 +67,12 @@ class zermelo:
         import requests
         url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
         myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
-                'grant_type': 'authorization_code', 'rememberMe': False}
+                 'grant_type': 'authorization_code', 'rememberMe': False}
         l = requests.post(url, data=myobj)
         import json
         jl = json.loads(l.text)
         access_token = jl['access_token']
         return(access_token)
-
 
     def get_schedule(self, year=None, week=None):
         time = self.get_date()
@@ -88,16 +82,24 @@ class zermelo:
             week = time[1]
         import requests
         import json
-        headers = {"Authorization": "Bearer "+self.access_token}
-        r = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
-                        '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
-        rl = json.loads(r.text)
-        # print(r.text)
-        response = rl["response"]
-        data = response["data"][0]
-        appointments = data["appointments"]
+        try:
+            headers = {"Authorization": "Bearer "+self.access_token}
+            rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
+                                '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+            rl = json.loads(rawr.text)
+            response = rl["response"]
+            data = response["data"][0]
+            appointments = data["appointments"]
+        except:
+            self.refresh()
+            headers = {"Authorization": "Bearer "+self.access_token}
+            rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
+                                '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+            rl = json.loads(rawr.text)
+            response = rl["response"]
+            data = response["data"][0]
+            appointments = data["appointments"]
         return(appointments)
-
 
     def sort_schedule(self, schedule=None, year=None, week=None):
         if(schedule == None):
@@ -128,7 +130,6 @@ class zermelo:
         days.pop(0)
         return(days)
 
-
     def readable_schedule(self, days=None, year=None, week=None):
         result = ''
         if(days == None):
@@ -142,7 +143,6 @@ class zermelo:
                     pass
             result += ("\n\n")
         return result
-
 
     def print_schedule(self, readable=None, days=None, year=None, week=None):
         if(readable == None):
