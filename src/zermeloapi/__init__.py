@@ -148,4 +148,3 @@ class zermelo:
         if(readable == None):
             readable = self.readable_schedule(days=days, year=year, week=week)
         print(readable)
-        
