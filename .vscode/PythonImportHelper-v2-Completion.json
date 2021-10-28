@@ -29,7 +29,16 @@
         "kind": 2,
         "importPath": "setup",
         "description": "setup",
-        "peekOfCode": "def get_date():\n    year, week = datetime.today().strftime(\"%Y %W\").split(\" \")\n    return year, week\nwith open(\"src\\zermeloapi\\__init__.py\", \"r\", encoding=\"utf-8\") as fh:\n    initpy = fh.read()\nwith open(\"README.md\", \"r\", encoding=\"utf-8\") as fh:\n    long_description = fh.read().replace(\"this_week\",get_date()[1]).replace(\"this_year\",get_date()[0]).replace(\"__init__.py\",initpy)\nsetuptools.setup(\n    name=\"zermeloapi\",\n    version=str(datetime.today()).split('.')[0].replace('-','.').replace(':','.').replace(' ','.'),",
+        "peekOfCode": "def get_date():\n    year, week = datetime.today().strftime(\"%Y %W\").split(\" \")\n    return year, week\nwith open(\"src\\zermeloapi\\__init__.py\", \"r\", encoding=\"utf-8\") as fh:\n    initpy = fh.read()\nwith open(\"README.md\", \"r\", encoding=\"utf-8\") as fh:\n    long_description = fh.read().replace(\"this_week\", get_date()[1]).replace(\n        \"this_year\", get_date()[0]).replace(\"__init__.py\", initpy).replace('__version__', version)\nsetuptools.setup(\n    name=\"zermeloapi\",",
+        "detail": "setup",
+        "documentation": {}
+    },
+    {
+        "label": "version",
+        "kind": 5,
+        "importPath": "setup",
+        "description": "setup",
+        "peekOfCode": "version = str(datetime.today()).split('.')[0].replace(\n    '-', '.').replace(':', '.').replace(' ', '.')\ndef get_date():\n    year, week = datetime.today().strftime(\"%Y %W\").split(\" \")\n    return year, week\nwith open(\"src\\zermeloapi\\__init__.py\", \"r\", encoding=\"utf-8\") as fh:\n    initpy = fh.read()\nwith open(\"README.md\", \"r\", encoding=\"utf-8\") as fh:\n    long_description = fh.read().replace(\"this_week\", get_date()[1]).replace(\n        \"this_year\", get_date()[0]).replace(\"__init__.py\", initpy).replace('__version__', version)",
         "detail": "setup",
         "documentation": {}
     }

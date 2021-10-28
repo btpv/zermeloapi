@@ -1,4 +1,4 @@
-# zermelo api
+# zermelo api v:__version__
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
