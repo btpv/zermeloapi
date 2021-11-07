@@ -134,8 +134,9 @@ class zermelo:
         result = ''
         if(days == None):
             days = self.sort_schedule(year=year, week=week)
-        for day in days:
-            result += ("start: "+day[0][0][1]+"\tend: "+day[0][-1][2]+'\n')
+        daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        for i,day in enumerate(days):
+            result += (daysofweek[i]+"\nstart: "+day[0][0][1]+"\tend: "+day[0][-1][2]+'\n')
             for les in day[0]:
                 if (les[4][0]["code"] < 3000 and les[4][0]["code"] >= 2000):
                     result += ("les: "+les[0].ljust(10, " ")+"lokaal: "+("📷"if(les[5])else (les[3][2:-2]if(
