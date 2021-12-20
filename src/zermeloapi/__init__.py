@@ -136,8 +136,7 @@ class zermelo:
             days = self.sort_schedule(year=year, week=week)
         daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
         for i,day in enumerate(days):
-            if len(day[0]) > 0:
-                result += (daysofweek[i]+"\nstart: "+day[0][0][1]+"\tend: "+day[0][-1][2]+'\n')
+            result += (daysofweek[i]+"\n"("start: "+day[0][0][1]+"\tend: "+day[0][-1][2]+'\n')if len(day[0]) > 0 else "")
             for les in day[0]:
                 if (les[4][0]["code"] < 3000 and les[4][0]["code"] >= 2000):
                     result += ("les: "+les[0].ljust(10, " ")+"lokaal: "+("📷"if(les[5])else (les[3][2:-2]if(
