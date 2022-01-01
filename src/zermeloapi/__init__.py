@@ -18,7 +18,7 @@ class zermelo:
         self.TimeToAddToUtc = self.get_date()[2]
         self.access_token = self.get_access_token()
 
-    def get_date():
+    def get_date(self):
         timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
         timezoneinfo = json.loads(str(timezoneinforeq))
         localtime = time.localtime(timezoneinfo["unixtime"]-946728000)
