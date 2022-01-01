@@ -1,3 +1,5 @@
+import requests,json,time
+from datetime import datetime
 class zermelo:
     expires_in = 0
     school = ''
@@ -16,14 +18,15 @@ class zermelo:
         self.TimeToAddToUtc = self.get_date()[2]
         self.access_token = self.get_access_token()
 
-    def get_date(self):
-        from datetime import date, datetime
-        year, week = date.today().strftime("%Y %W").split(" ")
-        if date.today().isoweekday() > 6:
-            week = str(int(week)+1)
-        TimeToAddToUtc = int(
-            str(datetime.now().astimezone()).split("+")[1].split(":")[0])
-        return year, week, TimeToAddToUtc
+    def get_date():
+        timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
+        timezoneinfo = json.loads(str(timezoneinforeq))
+        localtime = time.localtime(timezoneinfo["unixtime"]-946728000)
+        offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
+        year, week = localtime[0], timezoneinfo["week_number"]
+        if localtime[4] > 4:
+            week = int(week)+1
+        return year, week, offset_h
 
     def refresh(self):
         self.access_token = self.get_access_token()
@@ -36,7 +39,6 @@ class zermelo:
             username = self.username
         if(password == None):
             password = self.password
-        import requests
         url = 'https://'+school+'.zportal.nl/api/'+self.version+'/oauth'
         myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
@@ -64,12 +66,10 @@ class zermelo:
             school = self.school
         if(token == None):
             token = self.get_token()
-        import requests
         url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
         myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
                  'grant_type': 'authorization_code', 'rememberMe': False}
         l = requests.post(url, data=myobj)
-        import json
         jl = json.loads(l.text)
         access_token = jl['access_token']
         return(access_token)
@@ -80,8 +80,6 @@ class zermelo:
             year = time[0]
         if week == None:
             week = time[1]
-        import requests
-        import json
         try:
             headers = {"Authorization": "Bearer "+self.access_token}
             rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
@@ -107,7 +105,6 @@ class zermelo:
         pdate = 0
         days = [[[], []]]
         for les in schedule:
-            from datetime import datetime
             date = datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
             hour = str(int(datetime.utcfromtimestamp(
                 les["start"]).strftime('%H')) + self.TimeToAddToUtc)
