@@ -9,3 +9,5 @@ rmdir "src/zermeloapi.egg-info" /S /Q
 git add *
 git commit -m "build %ldt%"
 git push -u origin main
+sleep 5
+pip install --upgrade zermeloapi
