@@ -73,19 +73,22 @@ class zermelo:
         jl = json.loads(l.text)
         access_token = jl['access_token']
         return(access_token)
+    
 
-    def get_schedule(self, year=None, week=None):
+    def get_raw_schedule(self, year:int=None, week:int=None) -> dict:
         time = self.get_date()
         if year == None:
             year = time[0]
         if week == None:
             week = time[1]
+        headers = {"Authorization": "Bearer "+self.access_token}
+        rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +'&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+        rl = json.loads(rawr.text)
+        return rl
+    def get_schedule(self,rawschedule:dict=None,year=None, week=None):
+        self.get_raw_schedule(year=year,week=week)
         try:
-            headers = {"Authorization": "Bearer "+self.access_token}
-            rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
-                                '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
-            rl = json.loads(rawr.text)
-            response = rl["response"]
+            response = rawschedule["response"]
             data = response["data"][0]
             appointments = data["appointments"]
         except:

@@ -27,11 +27,16 @@ if u wand to u can give the school username and password again but u don't need 
 access_token = zermelo.get_access_token()
 ```
 again if u wand to u can give the school and username again but u don't need to in that case u can use `get_access_token(school,username)`
-## get schedule
+## get raw schedule
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
 u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=this_week)`,`get_schedule(year=this_year)`or`get_schedule(year=this_year,week=this_week)`
+## get schedule
+```python
+raw_schedule = zermelo.get_schedule()
+```
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=this_week)`,`get_schedule(year=this_year)`or`get_schedule(year=this_year,week=this_week)`and u you can pass a rawshedule from get_raw_shedule()
 ## sort schedule
 ```python
 sorted_schedule = zermelo.sort_schedule()
