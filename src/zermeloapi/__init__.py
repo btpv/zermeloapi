@@ -89,6 +89,7 @@ class zermelo:
             year = time[0]
         if week == None:
             week = time[1]
+        self.refresh()
         headers = {"Authorization": "Bearer "+self.access_token}
         rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +'&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
         if self.debug:
@@ -96,22 +97,11 @@ class zermelo:
         rl = json.loads(rawr.text)
         return rl
     def get_schedule(self,rawschedule:dict=None,year=None, week=None):
-        self.get_raw_schedule(year=year,week=week)
-        try:
-            response = rawschedule["response"]
-            data = response["data"][0]
-            appointments = data["appointments"]
-        except:
-            self.refresh()
-            headers = {"Authorization": "Bearer "+self.access_token}
-            rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
-                                '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
-            if self.debug:
-                print(rawr.text)
-            rl = json.loads(rawr.text)
-            response = rl["response"]
-            data = response["data"][0]
-            appointments = data["appointments"]
+        if rawschedule == None:
+            rawschedule = self.get_raw_schedule(year=year,week=week)
+        response = rawschedule["response"]
+        data = response["data"][0]
+        appointments = data["appointments"]
         return(appointments)
 
     def sort_schedule(self, schedule=None, year=None, week=None):
