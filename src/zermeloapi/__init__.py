@@ -6,20 +6,24 @@ class zermelo:
     username = ''
     password = ''
     teacher = False
+    debug = False
     TimeToAddToUtc = 0
     access_token = ''
 
-    def __init__(self, school, username, password, teacher=False, version=3):
+    def __init__(self, school, username, password, teacher=False, version=3,debug=False):
         self.school = school
         self.username = username
         self.password = password
         self.teacher = teacher
+        self.debug = debug
         self.version = 'v'+str(version)
         self.TimeToAddToUtc = self.get_date()[2]
         self.access_token = self.get_access_token()
 
     def get_date(self):
         timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
+        if self.debug:
+            print(timezoneinforeq)
         timezoneinfo = json.loads(str(timezoneinforeq))
         localtime = time.localtime(timezoneinfo["unixtime"]-946728000)
         offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
@@ -44,6 +48,8 @@ class zermelo:
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
         x = requests.post(url, data=myobj)
         respons = x.text
+        if self.debug:
+            print(x)
         start = respons.find("code=") + len("code=")
         end = respons.find("&", start)
         token = respons[start:end]
@@ -70,6 +76,8 @@ class zermelo:
         myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
                  'grant_type': 'authorization_code', 'rememberMe': False}
         l = requests.post(url, data=myobj)
+        if self.debug:
+            print(l)
         jl = json.loads(l.text)
         access_token = jl['access_token']
         return(access_token)
@@ -83,6 +91,8 @@ class zermelo:
             week = time[1]
         headers = {"Authorization": "Bearer "+self.access_token}
         rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +'&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+        if self.debug:
+            print(rawr)
         rl = json.loads(rawr.text)
         return rl
     def get_schedule(self,rawschedule:dict=None,year=None, week=None):
@@ -96,6 +106,8 @@ class zermelo:
             headers = {"Authorization": "Bearer "+self.access_token}
             rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
                                 '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+            if self.debug:
+                print(rawr)
             rl = json.loads(rawr.text)
             response = rl["response"]
             data = response["data"][0]
