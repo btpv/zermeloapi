@@ -49,7 +49,7 @@ class zermelo:
         x = requests.post(url, data=myobj)
         respons = x.text
         if self.debug:
-            print(x)
+            print(x.text)
         start = respons.find("code=") + len("code=")
         end = respons.find("&", start)
         token = respons[start:end]
@@ -77,7 +77,7 @@ class zermelo:
                  'grant_type': 'authorization_code', 'rememberMe': False}
         l = requests.post(url, data=myobj)
         if self.debug:
-            print(l)
+            print(l.text)
         jl = json.loads(l.text)
         access_token = jl['access_token']
         return(access_token)
@@ -107,7 +107,7 @@ class zermelo:
             rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +
                                 '&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
             if self.debug:
-                print(rawr)
+                print(rawr.text)
             rl = json.loads(rawr.text)
             response = rl["response"]
             data = response["data"][0]
