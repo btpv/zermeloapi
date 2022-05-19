@@ -9,16 +9,14 @@ class zermelo:
     expires_in = 0
     school = ''
     username = ''
-    password = ''
     teacher = False
     debug = False
     TimeToAddToUtc = 0
     access_token = ''
 
-    def __init__(self, school, username, password, teacher=False, version=3,debug=False,linkcode=None):
+    def __init__(self, school, username, teacher=False, version=3,debug=False,linkcode=None):
         self.school = school
         self.username = username
-        self.password = password
         self.teacher = teacher
         self.debug = debug
         self.version = 'v'+str(version)
