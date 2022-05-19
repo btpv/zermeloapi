@@ -3,7 +3,6 @@ import requests
 import json
 import time
 import base64
-from cryptography.fernet import Fernet 
 from datetime import datetime
 class zermelo:
     expires_in = 0
@@ -35,19 +34,11 @@ class zermelo:
             self.settokentofile(linkcode=linkcode)
         with open(file) as f:
             filevalue = f.read()
-        combie = base64.b64decode(filevalue)
-        encMessage, key = str(combie).replace("b'", "").split(":")
-        encMessage, key = bytes(encMessage, 'utf-8'), bytes(key, 'utf-8')
-        fernet = Fernet(key)
-        return fernet.decrypt(encMessage).decode()
+        return base64.b64decode(filevalue)
     def settokentofile(self,token=None,file="./token",linkcode=None):
         if token == None:
             token = self.gettokenfromlinkcode(linkcode=linkcode)
-        key = Fernet.generate_key()
-        fernet = Fernet(key)
-        encMessage = fernet.encrypt(token.encode())
-        combie = str(encMessage)[2:-1]+":"+str(key)[2:-1]
-        file = base64.b64encode(bytes(combie, "utf-8"))
+        file = base64.b64encode(bytes(token, "utf-8"))
         with open("./token", "w") as f:
             f.write(str(file)[2:-1])
     def get_date(self):
