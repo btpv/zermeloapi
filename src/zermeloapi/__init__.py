@@ -1,4 +1,9 @@
-import requests,json,time
+import os.path
+import requests
+import json
+import time
+import base64
+from cryptography.fernet import Fernet 
 from datetime import datetime
 class zermelo:
     expires_in = 0
@@ -10,7 +15,7 @@ class zermelo:
     TimeToAddToUtc = 0
     access_token = ''
 
-    def __init__(self, school, username, password, teacher=False, version=3,debug=False):
+    def __init__(self, school, username, password, teacher=False, version=3,debug=False,linkcode=None):
         self.school = school
         self.username = username
         self.password = password
@@ -18,8 +23,35 @@ class zermelo:
         self.debug = debug
         self.version = 'v'+str(version)
         self.TimeToAddToUtc = self.get_date()[2]
-        self.access_token = self.get_access_token()
+        self.token = self.gettokenfromfile(linkcode=linkcode)
 
+    def gettokenfromlinkcode(self, linkcode=None):
+        if linkcode == None:
+            linkcode = input("apitoken: ").replace(" ",'')
+        else:
+            linkcode = linkcode.replace(" ",'')
+        return json.loads(requests.post(f"https://ozhw.zportal.nl/api/v3/oauth/token?grant_type=authorization_code&code={linkcode}").text)["access_token"]
+
+    def gettokenfromfile(self, file="./token", linkcode=None):
+        if not os.path.exists(file):
+            self.settokentofile(linkcode=linkcode)
+        with open(file) as f:
+            filevalue = f.read()
+        combie = base64.b64decode(filevalue)
+        encMessage, key = str(combie).replace("b'", "").split(":")
+        encMessage, key = bytes(encMessage, 'utf-8'), bytes(key, 'utf-8')
+        fernet = Fernet(key)
+        return fernet.decrypt(encMessage).decode()
+    def settokentofile(self,token=None,file="./token",linkcode=None):
+        if token == None:
+            token = self.gettokenfromlinkcode(linkcode=linkcode)
+        key = Fernet.generate_key()
+        fernet = Fernet(key)
+        encMessage = fernet.encrypt(token.encode())
+        combie = str(encMessage)[2:-1]+":"+str(key)[2:-1]
+        file = base64.b64encode(bytes(combie, "utf-8"))
+        with open("./token", "w") as f:
+            f.write(str(file)[2:-1])
     def get_date(self):
         timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
         if self.debug:
@@ -31,56 +63,6 @@ class zermelo:
         if localtime[4] > 4:
             week = int(week)+1
         return year, week, offset_h
-
-    def refresh(self):
-        self.access_token = self.get_access_token()
-        return(self.expires_in)
-
-    def get_token(self, school=None, username=None, password=None):
-        if(school == None):
-            school = self.school
-        if (username == None):
-            username = self.username
-        if(password == None):
-            password = self.password
-        url = 'https://'+school+'.zportal.nl/api/'+self.version+'/oauth'
-        myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
-                 'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
-        x = requests.post(url, data=myobj)
-        respons = x.text
-        if self.debug:
-            print(x.text)
-        start = respons.find("code=") + len("code=")
-        end = respons.find("&", start)
-        token = respons[start:end]
-        start = respons.find("tenant=") + len("tenant=")
-        end = respons.find("&", start)
-        school = respons[start:end]
-        start = respons.find("expires_in=") + len("expires_in=")
-        end = respons.find("&", start)
-        self.expires_in = respons[start:end]
-        start = respons.find("loginMethod=") + len("loginMethod=")
-        end = respons.find("&", start)
-        self.loginMethod = respons[start:end]
-        start = respons.find("interfaceVersion=") + len("interfaceVersion=")
-        end = respons.find("&", start)
-        self.interfaceVersion = respons[start:end]
-        return(token)
-
-    def get_access_token(self, school=None, token=None):
-        if(school == None):
-            school = self.school
-        if(token == None):
-            token = self.get_token()
-        url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
-        myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
-                 'grant_type': 'authorization_code', 'rememberMe': False}
-        l = requests.post(url, data=myobj)
-        if self.debug:
-            print(l.text)
-        jl = json.loads(l.text)
-        access_token = jl['access_token']
-        return(access_token)
     
 
     def get_raw_schedule(self, year:int=None, week:int=None) -> dict:
@@ -89,9 +71,8 @@ class zermelo:
             year = time[0]
         if week == None:
             week = time[1]
-        self.refresh()
-        headers = {"Authorization": "Bearer "+self.access_token}
-        rawr = requests.get('https://' + self.school + '.zportal.nl/api/'+self.version+'/liveschedule?'+("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week) +'&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType', headers=headers)
+            ("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week)
+        rawr = requests.get(f"https://ozhw.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}")
         if self.debug:
             print(rawr)
         rl = json.loads(rawr.text)
