@@ -22,6 +22,8 @@ class zermelo:
         self.TimeToAddToUtc = self.get_date()[2]
         self.token = self.gettokenfromfile(linkcode=linkcode)
 
+    def updatetoken(self, linkcode):
+        self.token = self.gettokenfromfile(linkcode=linkcode)
     def gettokenfromlinkcode(self, linkcode=None):
         if linkcode == None:
             linkcode = input("apitoken: ").replace(" ",'')
