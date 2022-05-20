@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import os.path
 import requests
 import json
@@ -12,13 +13,15 @@ class zermelo:
     debug = False
     TimeToAddToUtc = 0
 
-    def __init__(self, school, username, teacher=False, version=3,debug=False,linkcode=None):
+    def __init__(self, school, username,password=None, teacher=False, version=3,debug=False,linkcode=None):
         self.school = school
         self.username = username
         self.teacher = teacher
         self.debug = debug
         self.version = 'v'+str(version)
         self.TimeToAddToUtc = self.get_date()[2]
+        if linkcode == None and password != None:
+            pass
         self.token = self.gettokenfromfile(linkcode=linkcode)
 
     def updatetoken(self, linkcode):
@@ -29,6 +32,48 @@ class zermelo:
         else:
             linkcode = str(linkcode).replace(" ",'')
         return json.loads(requests.post(f"https://ozhw.zportal.nl/api/v3/oauth/token?grant_type=authorization_code&code={linkcode}").text)["access_token"]
+    def get_tokenfromusrpsw(self, school=None, username=None, password=None):
+        if(school == None):
+            school = self.school
+        if (username == None):
+            username = self.username
+        if(password == None):
+            password = self.password
+        url = 'https://'+school+'.zportal.nl/api/'+self.version+'/oauth'
+        myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
+                 'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
+        x = requests.post(url, data=myobj)
+        respons = x.text
+        if self.debug:
+            print(x.text)
+        start = respons.find("code=") + len("code=")
+        end = respons.find("&", start)
+        token = respons[start:end]
+        start = respons.find("tenant=") + len("tenant=")
+        end = respons.find("&", start)
+        school = respons[start:end]
+        start = respons.find("expires_in=") + len("expires_in=")
+        end = respons.find("&", start)
+        self.expires_in = respons[start:end]
+        start = respons.find("loginMethod=") + len("loginMethod=")
+        end = respons.find("&", start)
+        self.loginMethod = respons[start:end]
+        start = respons.find("interfaceVersion=") + len("interfaceVersion=")
+        end = respons.find("&", start)
+        self.interfaceVersion = respons[start:end]
+        if(school == None):
+            school = self.school
+        if(token == None):
+            token = self.get_token()
+        url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
+        myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
+                 'grant_type': 'authorization_code', 'rememberMe': False}
+        l = requests.post(url, data=myobj)
+        if self.debug:
+            print(l.text)
+        jl = json.loads(l.text)
+        token = jl['access_token']
+        return(token)
 
     def gettokenfromfile(self, file="./token", linkcode=None):
         if not os.path.exists(file):
