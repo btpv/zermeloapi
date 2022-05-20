@@ -47,7 +47,7 @@ class zermelo:
         if self.debug:
             print(timezoneinforeq)
         timezoneinfo = json.loads(str(timezoneinforeq))
-        localtime = time.localtime(timezoneinfo["unixtime"]-946728000)
+        localtime = time.localtime(timezoneinfo["unixtime"])
         offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
         year, week = localtime[0], timezoneinfo["week_number"]
         if localtime[4] > 4:
