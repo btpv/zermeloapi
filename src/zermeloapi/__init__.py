@@ -38,9 +38,9 @@ class zermelo:
     def settokentofile(self,token=None,file="./token",linkcode=None):
         if token == None:
             token = self.gettokenfromlinkcode(linkcode=linkcode)
-        file = base64.b64encode(bytes(token, "utf-8"))
+        file = base64.b64encode(bytes(token, "utf-8")[2:-1])
         with open("./token", "w") as f:
-            f.write(str(file)[2:-1])
+            f.write(str(file))
     def get_date(self):
         timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
         if self.debug:
