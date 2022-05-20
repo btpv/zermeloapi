@@ -22,7 +22,8 @@ class zermelo:
         self.TimeToAddToUtc = self.get_date()[2]
         if linkcode == None and password != None:
             self.token = self.get_tokenfromusrpsw(school=school,username=username,password=password)
-        self.token = self.gettokenfromfile(linkcode=linkcode)
+        else:
+            self.token = self.gettokenfromfile(linkcode=linkcode)
 
     def updatetoken(self, linkcode):
         self.token = self.gettokenfromfile(linkcode=linkcode)
