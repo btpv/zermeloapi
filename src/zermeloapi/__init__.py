@@ -11,7 +11,6 @@ class zermelo:
     teacher = False
     debug = False
     TimeToAddToUtc = 0
-    access_token = ''
 
     def __init__(self, school, username, teacher=False, version=3,debug=False,linkcode=None):
         self.school = school
@@ -28,7 +27,7 @@ class zermelo:
         if linkcode == None:
             linkcode = input("apitoken: ").replace(" ",'')
         else:
-            linkcode = linkcode.replace(" ",'')
+            linkcode = str(linkcode).replace(" ",'')
         return json.loads(requests.post(f"https://ozhw.zportal.nl/api/v3/oauth/token?grant_type=authorization_code&code={linkcode}").text)["access_token"]
 
     def gettokenfromfile(self, file="./token", linkcode=None):
@@ -36,7 +35,7 @@ class zermelo:
             self.settokentofile(linkcode=linkcode)
         with open(file) as f:
             filevalue = f.read()
-        return base64.b64decode(filevalue)
+        return str(base64.b64decode(filevalue))[2:-1]
     def settokentofile(self,token=None,file="./token",linkcode=None):
         if token == None:
             token = self.gettokenfromlinkcode(linkcode=linkcode)
