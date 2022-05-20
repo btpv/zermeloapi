@@ -61,7 +61,6 @@ class zermelo:
             year = time[0]
         if week == None:
             week = time[1]
-            ("teacher" if (self.teacher) else "student")+'='+self.username+'&week='+str(year)+str(week)
         rawr = requests.get(f"https://ozhw.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}")
         if self.debug:
             print(rawr)
