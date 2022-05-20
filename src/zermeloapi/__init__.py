@@ -140,6 +140,8 @@ class zermelo:
             # print(les["status"])
             if date != pdate:
                 days.append([[], []])
+            if self.debug():
+                print(les)
             if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
                 days[-1][0].append([les["subjects"][0], time, etime,
                                     str(les["locations"]), les["status"], les["online"]])
