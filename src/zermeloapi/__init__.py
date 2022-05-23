@@ -95,8 +95,8 @@ class zermelo:
         localtime = time.localtime(timezoneinfo["unixtime"])
         offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
         year, week = localtime[0], timezoneinfo["week_number"]
-        if localtime[4] > 4:
-            week = int(week)+1
+        if localtime[4] < 4:
+            week = int(week)-1
         return year, week, offset_h
     
 
