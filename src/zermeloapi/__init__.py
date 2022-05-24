@@ -1,3 +1,4 @@
+from calendar import weekday
 import os.path
 import requests
 import json
@@ -93,10 +94,11 @@ class zermelo:
             print(timezoneinforeq)
         timezoneinfo = json.loads(str(timezoneinforeq))
         localtime = time.localtime(timezoneinfo["unixtime"])
+        day = datetime.datetime.strptime(time.strftime("%y%d%m",localtime),"%y%d%m").weekday()
         offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
         year, week = localtime[0], timezoneinfo["week_number"]
-        if localtime[4] < 4:
-            week = int(week)-1
+        if day > 4:
+            week = int(week)+1
         return year, week, offset_h
     
 
