@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  zmlapibuild:
+    user: 1000:1000
+    tty: true
+    container_name: zmlapibuild
+    build: .
+    volumes:
+      - ${PWD}/../:/build
+      - ${HOME}/pws.yaml:/pws.yaml
+      - ${HOME}/.gitconfig/:/.gitconfig/
+    mem_limit: 10g
+    mem_reservation: 9g
