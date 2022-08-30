@@ -9,5 +9,6 @@ services:
       - ${PWD}/../:/build
       - ${HOME}/pws.yaml:/pws.yaml
       - ${HOME}/.gitconfig/:/.gitconfig/
+      - ${HOME}/.git/:/.git/
     mem_limit: 10g
     mem_reservation: 9g
