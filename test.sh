@@ -14,5 +14,5 @@ rm src\\zermeloapi*
 git add * 
 git commit -m "$VERS" 
 git push -u origin main
-pip install --upgrade zermeloapi
+pip install -i https://test.pypi.org/simple/ zermeloapi
 python3 test.py
