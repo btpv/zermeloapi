@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+src/zermeloapi/__init__.py
+src/zermeloapi.egg-info/PKG-INFO
+src/zermeloapi.egg-info/SOURCES.txt
+src/zermeloapi.egg-info/dependency_links.txt
+src/zermeloapi.egg-info/requires.txt
+src/zermeloapi.egg-info/top_level.txt
