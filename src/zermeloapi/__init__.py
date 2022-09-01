@@ -131,15 +131,15 @@ class zermelo:
         pdate = 0
         days = [[[], []]]
         for les in schedule:
-            date = datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
-            hour = str(int(datetime.utcfromtimestamp(
+            date = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
+            hour = str(int(datetime.datetime.utcfromtimestamp(
                 les["start"]).strftime('%H')) + self.TimeToAddToUtc)
-            time = datetime.utcfromtimestamp(les["start"]).strftime('%Y-%m-%d ') + (hour if int(
-                hour) > 9 else ('0'+hour)) + datetime.utcfromtimestamp(les["start"]).strftime(':%M')
-            ehour = str(int(datetime.utcfromtimestamp(
+            time = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y-%m-%d ') + (hour if int(
+                hour) > 9 else ('0'+hour)) + datetime.datetime.utcfromtimestamp(les["start"]).strftime(':%M')
+            ehour = str(int(datetime.datetime.utcfromtimestamp(
                 les["end"]).strftime('%H')) + self.TimeToAddToUtc)
-            etime = datetime.utcfromtimestamp(les["end"]).strftime('%Y-%m-%d ') + (ehour if int(
-                ehour) > 9 else ('0'+ehour)) + datetime.utcfromtimestamp(les["end"]).strftime(':%M')
+            etime = datetime.datetime.utcfromtimestamp(les["end"]).strftime('%Y-%m-%d ') + (ehour if int(
+                ehour) > 9 else ('0'+ehour)) + datetime.datetime.utcfromtimestamp(les["end"]).strftime(':%M')
             # print(les["status"])
             if date != pdate:
                 days.append([[], []])

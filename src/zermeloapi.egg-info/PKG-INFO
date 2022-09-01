@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2022.9.1.11.54.42
+Version: 2022.9.1.11.56.47
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -11,7 +11,7 @@ Requires-Python: >=3.0
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# zermelo api v:2022.09.01.11.54.42
+# zermelo api v:2022.09.01.11.56.47
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -200,15 +200,15 @@ class zermelo:
         pdate = 0
         days = [[[], []]]
         for les in schedule:
-            date = datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
-            hour = str(int(datetime.utcfromtimestamp(
+            date = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
+            hour = str(int(datetime.datetime.utcfromtimestamp(
                 les["start"]).strftime('%H')) + self.TimeToAddToUtc)
-            time = datetime.utcfromtimestamp(les["start"]).strftime('%Y-%m-%d ') + (hour if int(
-                hour) > 9 else ('0'+hour)) + datetime.utcfromtimestamp(les["start"]).strftime(':%M')
-            ehour = str(int(datetime.utcfromtimestamp(
+            time = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y-%m-%d ') + (hour if int(
+                hour) > 9 else ('0'+hour)) + datetime.datetime.utcfromtimestamp(les["start"]).strftime(':%M')
+            ehour = str(int(datetime.datetime.utcfromtimestamp(
                 les["end"]).strftime('%H')) + self.TimeToAddToUtc)
-            etime = datetime.utcfromtimestamp(les["end"]).strftime('%Y-%m-%d ') + (ehour if int(
-                ehour) > 9 else ('0'+ehour)) + datetime.utcfromtimestamp(les["end"]).strftime(':%M')
+            etime = datetime.datetime.utcfromtimestamp(les["end"]).strftime('%Y-%m-%d ') + (ehour if int(
+                ehour) > 9 else ('0'+ehour)) + datetime.datetime.utcfromtimestamp(les["end"]).strftime(':%M')
             # print(les["status"])
             if date != pdate:
                 days.append([[], []])
