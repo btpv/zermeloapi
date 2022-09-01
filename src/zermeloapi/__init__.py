@@ -4,7 +4,8 @@ import requests
 import json
 import time
 import base64
-from datetime import datetime
+# from datetime import datetime
+import datetime
 class zermelo:
     expires_in = 0
     school = ''

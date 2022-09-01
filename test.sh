@@ -16,5 +16,5 @@ git add *
 git commit -m "$VERS" 
 git push -u origin main
 sleep 5
-pip install -i https://test.pypi.org/simple/ zermeloapi
+pip install --upgrade -i https://test.pypi.org/simple/ zermeloapi
 python3 test.py
