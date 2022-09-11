@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2022.9.1.11.59.6
+Version: 2022.9.11.14.31.32
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -11,7 +11,7 @@ Requires-Python: >=3.0
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# zermelo api v:2022.09.01.11.59.06
+# zermelo api v:2022.09.11.14.31.32
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -44,12 +44,12 @@ again if u wand to u can give the school and username again but u don't need to 
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=35)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=35)`
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=36)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=36)`
 ## get schedule
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=35)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=35)`and u you can pass a rawshedule from get_raw_shedule()
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=36)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=36)`and u you can pass a rawshedule from get_raw_shedule()
 ## sort schedule
 ```python
 sorted_schedule = zermelo.sort_schedule()
@@ -178,7 +178,7 @@ class zermelo:
             year = time[0]
         if week == None:
             week = time[1]
-        url = f"https://ozhw.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
+        url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
         if self.debug:
             print(url)
         rawr = requests.get(url)
