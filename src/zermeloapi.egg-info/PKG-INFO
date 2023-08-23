@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2023.8.23.16.28.48
+Version: 2023.8.23.16.31.24
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -11,7 +11,7 @@ Requires-Python: >=3.0
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# zermelo api v:2023.08.23.16.28.48
+# zermelo api v:2023.08.23.16.31.24
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
