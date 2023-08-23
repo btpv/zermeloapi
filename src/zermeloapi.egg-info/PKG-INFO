@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2022.9.11.14.31.32
+Version: 2023.8.23.16.28.48
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -11,7 +11,7 @@ Requires-Python: >=3.0
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# zermelo api v:2022.09.11.14.31.32
+# zermelo api v:2023.08.23.16.28.48
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -44,12 +44,12 @@ again if u wand to u can give the school and username again but u don't need to 
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=36)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=36)`
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=34)`,`get_schedule(year=2023)`or`get_schedule(year=2023,week=34)`
 ## get schedule
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=36)`,`get_schedule(year=2022)`or`get_schedule(year=2022,week=36)`and u you can pass a rawshedule from get_raw_shedule()
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=34)`,`get_schedule(year=2023)`or`get_schedule(year=2023,week=34)`and u you can pass a rawshedule from get_raw_shedule()
 ## sort schedule
 ```python
 sorted_schedule = zermelo.sort_schedule()
@@ -159,17 +159,8 @@ class zermelo:
         with open("./token", "w") as f:
             f.write(str(file))
     def get_date(self):
-        timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
-        if self.debug:
-            print(timezoneinforeq)
-        timezoneinfo = json.loads(str(timezoneinforeq))
-        localtime = time.localtime(timezoneinfo["unixtime"])
-        day = datetime.datetime.strptime(time.strftime("%y%d%m",localtime),"%y%d%m").weekday()
-        offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
-        year, week = localtime[0], timezoneinfo["week_number"]
-        if day > 4:
-            week = int(week)+1
-        return year, week, offset_h
+        now = datetime.datetime.now()
+        return (now.year,now.isocalendar()[1],int((datetime.datetime.fromtimestamp(now.timestamp()) - datetime.datetime.utcfromtimestamp(now.timestamp())).total_seconds() / 3600))
     
 
     def get_raw_schedule(self, year:int=None, week:int=None) -> dict:
