@@ -90,17 +90,8 @@ class zermelo:
         with open("./token", "w") as f:
             f.write(str(file))
     def get_date(self):
-        timezoneinforeq = requests.get("http://worldtimeapi.org/api/ip").text
-        if self.debug:
-            print(timezoneinforeq)
-        timezoneinfo = json.loads(str(timezoneinforeq))
-        localtime = time.localtime(timezoneinfo["unixtime"])
-        day = datetime.datetime.strptime(time.strftime("%y%d%m",localtime),"%y%d%m").weekday()
-        offset_h = int(str(timezoneinfo["utc_offset"]).split(":")[0].replace("+", ""))
-        year, week = localtime[0], timezoneinfo["week_number"]
-        if day > 4:
-            week = int(week)+1
-        return year, week, offset_h
+        now = datetime.datetime.now()
+        return (now.year,now.isocalendar()[1],int((datetime.datetime.fromtimestamp(now.timestamp()) - datetime.datetime.utcfromtimestamp(now.timestamp())).total_seconds() / 3600))
     
 
     def get_raw_schedule(self, year:int=None, week:int=None) -> dict:
