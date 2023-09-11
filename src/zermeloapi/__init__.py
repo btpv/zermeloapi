@@ -144,13 +144,21 @@ class zermelo:
                 days.append([[], []])
             if self.debug:
                 print(les)
-            if not (les == None or len(les["status"]) < 1):
-                if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
+            if username != None:
+                if (not les["cancelled"]):
                     days[-1][0].append([les["subjects"][0], time, etime,
                                         str(les["locations"]), les["status"], les["online"]])
                 else:
                     days[-1][1].append([les["subjects"][0], time, etime,
-                                        str(les["locations"]), les["status"], les["online"]])
+                                    str(les["locations"]), les["status"], les["online"]])
+            else:
+                if not (les == None or len(les["status"]) < 1):
+                    if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
+                        days[-1][0].append([les["subjects"][0], time, etime,
+                                            str(les["locations"]), les["status"], les["online"]])
+                    else:
+                        days[-1][1].append([les["subjects"][0], time, etime,
+                                            str(les["locations"]), les["status"], les["online"]])
             pdate = date
         days.pop(0)
         return(days)
