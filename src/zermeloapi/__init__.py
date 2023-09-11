@@ -154,10 +154,10 @@ class zermelo:
                     code = 3011
                 if (not les["cancelled"]):
                     days[-1][0].append([les["subjects"][0], time, etime,
-                                        str(les["locations"]), [{"code":code}], les["online"]])
+                                        str(les["locations"]), [{"code":code}], False])
                 else:
                     days[-1][1].append([les["subjects"][0], time, etime,
-                                    str(les["locations"]), [{"code":code}], les["online"]])
+                                    str(les["locations"]), [{"code":code}], False])
             else:
                 if not (les == None or len(les["status"]) < 1):
                     if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
