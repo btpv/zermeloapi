@@ -117,8 +117,11 @@ class zermelo:
         if rawschedule == None:
             rawschedule = self.get_raw_schedule(year=year,week=week,username=username,teacher=teacher)
         response = rawschedule["response"]
-        data = response["data"][0]
-        appointments = data["appointments"]
+        if username != None:
+            appointments = response["data"]
+        else:
+            data = response["data"][0]
+            appointments = data["appointments"]
         return(appointments)
 
     def sort_schedule(self, schedule=None, year=None, week=None,username=None,teacher=None):
