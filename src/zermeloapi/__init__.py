@@ -22,7 +22,7 @@ class zermelo:
         self.version = 'v'+str(version)
         self.TimeToAddToUtc = self.get_date()[2]
         if linkcode == None and password != None:
-            self.token = self.get_tokenfromusrpsw(school=school,username=username,password=password)
+            self.token = self.get_tokenfromusrpsw(school=school,username=username,teacher=teacher,password=password)
         else:
             self.token = self.gettokenfromfile(linkcode=linkcode)
 
@@ -113,17 +113,17 @@ class zermelo:
             print(rawr)
         rl = json.loads(rawr.text)
         return rl
-    def get_schedule(self,rawschedule:dict=None,year=None, week=None,username=None):
+    def get_schedule(self,rawschedule:dict=None,year=None, week=None,username=None,teacher=None):
         if rawschedule == None:
-            rawschedule = self.get_raw_schedule(year=year,week=week,username=username)
+            rawschedule = self.get_raw_schedule(year=year,week=week,username=username,teacher=teacher)
         response = rawschedule["response"]
         data = response["data"][0]
         appointments = data["appointments"]
         return(appointments)
 
-    def sort_schedule(self, schedule=None, year=None, week=None,username=None):
+    def sort_schedule(self, schedule=None, year=None, week=None,username=None,teacher=None):
         if(schedule == None):
-            schedule = self.get_schedule(year=year, week=week,username=username)
+            schedule = self.get_schedule(year=year, week=week,username=username,teacher=teacher)
         pdate = 0
         days = [[[], []]]
         for les in schedule:
@@ -152,10 +152,10 @@ class zermelo:
         days.pop(0)
         return(days)
 
-    def readable_schedule(self, days=None, year=None, week=None,username=None):
+    def readable_schedule(self, days=None, year=None, week=None,username=None,teacher=None):
         result = ''
         if(days == None):
-            days = self.sort_schedule(year=year, week=week,username=username)
+            days = self.sort_schedule(year=year, week=week,username=username,teacher=teacher)
         daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
         for i,day in enumerate(days):
             if len(day[0]) > 0:
@@ -170,7 +170,7 @@ class zermelo:
             result += ("\n\n")
         return result
 
-    def print_schedule(self, readable=None, days=None, year=None, week=None,username=None):
+    def print_schedule(self, readable=None, days=None, year=None, week=None,username=None,teacher=None):
         if(readable == None):
-            readable = self.readable_schedule(days=days, year=year, week=week,username=username)
+            readable = self.readable_schedule(days=days, year=year, week=week,username=username,teacher=teacher)
         print(readable)
