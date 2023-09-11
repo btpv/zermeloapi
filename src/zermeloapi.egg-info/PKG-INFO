@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2023.9.11.12.22.9
+Version: 2023.9.11.12.36.59
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -13,7 +13,7 @@ License-File: LICENSE
 Requires-Dist: datetime
 Requires-Dist: requests
 
-# zermelo api v:2023.09.11.12.22.09
+# zermelo api v:2023.09.11.12.36.59
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -216,12 +216,19 @@ class zermelo:
             if self.debug:
                 print(les)
             if username != None:
+                code = 2002
+                if les["cancelled"]:
+                    code = 4007
+                elif les["moved"]:
+                    code = 3012
+                elif les["modified"]:
+                    code = 3011
                 if (not les["cancelled"]):
                     days[-1][0].append([les["subjects"][0], time, etime,
-                                        str(les["locations"]), les["status"], les["online"]])
+                                        str(les["locations"]), [{"code":code}], les["online"]])
                 else:
                     days[-1][1].append([les["subjects"][0], time, etime,
-                                    str(les["locations"]), les["status"], les["online"]])
+                                    str(les["locations"]), [{"code":code}], les["online"]])
             else:
                 if not (les == None or len(les["status"]) < 1):
                     if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
