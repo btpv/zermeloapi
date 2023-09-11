@@ -14,4 +14,5 @@ rm src\\zermeloapi*
 git add * 
 git commit -m "$VERS" 
 git push -u origin main
+sleep 5
 pip install --upgrade zermeloapi

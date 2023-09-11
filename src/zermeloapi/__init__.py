@@ -94,13 +94,18 @@ class zermelo:
         return (now.year,now.isocalendar()[1],int((datetime.datetime.fromtimestamp(now.timestamp()) - datetime.datetime.utcfromtimestamp(now.timestamp())).total_seconds() / 3600))
     
 
-    def get_raw_schedule(self, year:int=None, week:int=None) -> dict:
+    def get_raw_schedule(self, year:int=None, week:int=None, username:str=None,teacher:bool = False) -> dict:
         time = self.get_date()
         if year == None:
             year = time[0]
         if week == None:
             week = time[1]
-        url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
+        if username == None:
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
+        else:
+            start = datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp()
+            end = datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp()
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&start={start}&end={end}&{'teachers' if (teacher) else 'possibleStudents'}={self.username}&"
         if self.debug:
             print(url)
         rawr = requests.get(url)
@@ -108,17 +113,17 @@ class zermelo:
             print(rawr)
         rl = json.loads(rawr.text)
         return rl
-    def get_schedule(self,rawschedule:dict=None,year=None, week=None):
+    def get_schedule(self,rawschedule:dict=None,year=None, week=None,username=None):
         if rawschedule == None:
-            rawschedule = self.get_raw_schedule(year=year,week=week)
+            rawschedule = self.get_raw_schedule(year=year,week=week,username=username)
         response = rawschedule["response"]
         data = response["data"][0]
         appointments = data["appointments"]
         return(appointments)
 
-    def sort_schedule(self, schedule=None, year=None, week=None):
+    def sort_schedule(self, schedule=None, year=None, week=None,username=None):
         if(schedule == None):
-            schedule = self.get_schedule(year=year, week=week)
+            schedule = self.get_schedule(year=year, week=week,username=username)
         pdate = 0
         days = [[[], []]]
         for les in schedule:
@@ -147,10 +152,10 @@ class zermelo:
         days.pop(0)
         return(days)
 
-    def readable_schedule(self, days=None, year=None, week=None):
+    def readable_schedule(self, days=None, year=None, week=None,username=None):
         result = ''
         if(days == None):
-            days = self.sort_schedule(year=year, week=week)
+            days = self.sort_schedule(year=year, week=week,username=username)
         daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
         for i,day in enumerate(days):
             if len(day[0]) > 0:
@@ -165,7 +170,7 @@ class zermelo:
             result += ("\n\n")
         return result
 
-    def print_schedule(self, readable=None, days=None, year=None, week=None):
+    def print_schedule(self, readable=None, days=None, year=None, week=None,username=None):
         if(readable == None):
-            readable = self.readable_schedule(days=days, year=year, week=week)
+            readable = self.readable_schedule(days=days, year=year, week=week,username=username)
         print(readable)
