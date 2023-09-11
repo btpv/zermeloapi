@@ -103,9 +103,9 @@ class zermelo:
         if username == None:
             url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
         else:
-            start = datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp()
-            end = datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp()
-            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&start={start}&end={end}&{'teachers' if (teacher) else 'possibleStudents'}={self.username}&"
+            start = datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp()[0:-2]
+            end = datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp()[0:-2]
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&start={start}&end={end}&{'teachers' if (teacher) else 'possibleStudents'}={username}&"
         if self.debug:
             print(url)
         rawr = requests.get(url)

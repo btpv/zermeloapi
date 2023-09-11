@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2023.9.11.12.7.22
+Version: 2023.9.11.12.9.58
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -13,7 +13,7 @@ License-File: LICENSE
 Requires-Dist: datetime
 Requires-Dist: requests
 
-# zermelo api v:2023.09.11.12.07.22
+# zermelo api v:2023.09.11.12.09.58
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -174,9 +174,9 @@ class zermelo:
         if username == None:
             url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
         else:
-            start = datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp()
-            end = datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp()
-            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&start={start}&end={end}&{'teachers' if (teacher) else 'possibleStudents'}={self.username}&"
+            start = datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp()[0:-2]
+            end = datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp()[0:-2]
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&start={start}&end={end}&{'teachers' if (teacher) else 'possibleStudents'}={username}&"
         if self.debug:
             print(url)
         rawr = requests.get(url)
