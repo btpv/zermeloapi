@@ -15,6 +15,8 @@ rm src\\zermeloapi*
 git add * 
 git commit -m "$VERS" 
 git push -u origin test
-sleep 20
-pip install --upgrade -i https://test.pypi.org/simple/ zermeloapi
+OUTPUT=""; 
+while [ `echo $OUTPUT | grep -c Successfully` = 0 ]; do 
+  OUTPUT=`pip install --upgrade -i https://test.pypi.org/simple/ zermeloapi`; 
+done
 python3 test.py
