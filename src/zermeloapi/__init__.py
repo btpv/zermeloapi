@@ -129,6 +129,7 @@ class zermelo:
             schedule = self.get_schedule(year=year, week=week,username=username,teacher=teacher)
         pdate = 0
         days = [[[], []]]
+        thisweek = {}
         for les in schedule:
             date = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
             hour = str(int(datetime.datetime.utcfromtimestamp(
@@ -140,10 +141,6 @@ class zermelo:
             etime = datetime.datetime.utcfromtimestamp(les["end"]).strftime('%Y-%m-%d ') + (ehour if int(
                 ehour) > 9 else ('0'+ehour)) + datetime.datetime.utcfromtimestamp(les["end"]).strftime(':%M')
             # print(les["status"])
-            if date != pdate:
-                days.append([[], []])
-            if self.debug:
-                print(les)
             if username != None:
                 code = 2002
                 if les["cancelled"]:
@@ -152,13 +149,19 @@ class zermelo:
                     code = 3012
                 elif les["modified"]:
                     code = 3011
+                if not date in thisweek:
+                    thisweek[date] = [[],[]]
                 if (not les["cancelled"]):
-                    days[-1][0].append([les["subjects"][0], time, etime,
+                    thisweek[date][0].append([les["subjects"][0], time, etime,
                                         str(les["locations"]), [{"code":code}], False])
                 else:
-                    days[-1][1].append([les["subjects"][0], time, etime,
+                    thisweek[date][1].append([les["subjects"][0], time, etime,
                                     str(les["locations"]), [{"code":code}], False])
             else:
+                if date != pdate:
+                    days.append([[], []])
+                if self.debug:
+                    print(les)
                 if not (les == None or len(les["status"]) < 1):
                     if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
                         days[-1][0].append([les["subjects"][0], time, etime,
@@ -167,7 +170,12 @@ class zermelo:
                         days[-1][1].append([les["subjects"][0], time, etime,
                                             str(les["locations"]), les["status"], les["online"]])
             pdate = date
-        days.pop(0)
+        if username != None:
+            a = sorted([int(i) for i in thisweek.keys()])
+            b = [str(c) for c in a]
+            days = [thisweek[i] for i in b]
+        else:
+            days.pop(0)
         return(days)
 
     def readable_schedule(self, days=None, year=None, week=None,username=None,teacher=None):

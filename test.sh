@@ -18,7 +18,7 @@ git push -u origin main
 OUTPUT=""; 
 while [ `echo $OUTPUT | grep -c Successfully` = 0 ]; do 
   OUTPUT=`pip install --upgrade -i https://test.pypi.org/simple/ zermeloapi`;
-#   echo $OUTPUT
   sleep 1
 done
-# python3 test.py
+echo libs updated
+python3 test.py
