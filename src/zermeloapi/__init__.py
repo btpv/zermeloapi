@@ -143,7 +143,7 @@ class zermelo:
             # print(les["status"])
             if username != None:
                 code = 2002
-                if les["cancelled"]:
+                if les["cancelled"] or not les["valid"]:
                     code = 4007
                 elif les["moved"]:
                     code = 3012
@@ -151,7 +151,7 @@ class zermelo:
                     code = 3011
                 if not date in thisweek:
                     thisweek[date] = [[],[]]
-                if (not les["cancelled"]):
+                if (not les["cancelled"] and les["valid"]):
                     thisweek[date][0].append([les["subjects"][0], time, etime,
                                         str(les["locations"]), [{"code":code}], False])
                 else:
@@ -171,9 +171,13 @@ class zermelo:
                                             str(les["locations"]), les["status"], les["online"]])
             pdate = date
         if username != None:
-            a = sorted([int(i) for i in thisweek.keys()])
-            b = [str(c) for c in a]
-            days = [thisweek[i] for i in b]
+            thisweekdayssorted = [thisweek[i] for i in [str(c) for c in sorted([int(i) for i in thisweek.keys()])]]
+            days = []
+            for v in thisweekdayssorted:
+                part = []
+                for v2 in v:
+                    part.append(sorted(v2,key = lambda x: int(x[1].replace(":","").replace("-","").replace(" ",""))))
+                days.append(part)
         else:
             days.pop(0)
         return(days)
@@ -189,9 +193,9 @@ class zermelo:
             else:
                 result += (f"{daysofweek[i]}\n")
             for les in day[0]:
-                if (les[4][0]["code"] < 3000 and les[4][0]["code"] >= 2000):
-                    result += ("les: "+les[0].ljust(10, " ")+"lokaal: "+("📷"if(les[5])else (les[3][2:-2]if(
-                        len(les[3][2:-2]) > 0)else "----")).ljust(10, " ")+"\tstart: "+les[1]+"\tend: "+les[2]+'\n')
+                if (les[4][0]["code"] < 4000 and les[4][0]["code"] >= 2000):
+                # if True:
+                    result += f"les: {les[0].ljust(8, ' ')}  lokaal: {('📷'if(les[5])else (les[3][2:-2]if(len(les[3][2:-2]) > 0)else '----')).ljust(8, ' ')}  start: {les[1]}\tend: {les[2]}\n"
                     pass
             result += ("\n\n")
         return result
