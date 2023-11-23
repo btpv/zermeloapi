@@ -44,10 +44,13 @@ class zermelo:
         url = 'https://'+school+'.zportal.nl/api/'+self.version+'/oauth'
         myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
-        x = requests.post(url, data=myobj)
-        respons = x.text
+        x = requests.post(url, data=myobj,allow_redirects=False)
+        respons = x.headers['Location']
+        print(x.headers['Location'])
+        # exit(0)
         if self.debug:
             print(x.text)
+            # exit(0)
         start = respons.find("code=") + len("code=")
         end = respons.find("&", start)
         token = respons[start:end]
@@ -67,9 +70,12 @@ class zermelo:
             school = self.school
         if(token == None):
             token = self.get_token()
+        print(token)
         url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
         myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
                  'grant_type': 'authorization_code', 'rememberMe': False}
+        print("\n\n")
+        print(myobj,url)
         l = requests.post(url, data=myobj)
         if self.debug:
             print(l.text)
