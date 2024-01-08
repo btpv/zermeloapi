@@ -4,10 +4,9 @@ python3 -c "exec('path = \'src/zermeloapi.egg-info\'\nfrom os import listdir,sys
 VERS=`python3 -c 'exec("import datetime\nprint(datetime.datetime.now())")'`
 VERS="build $VERS"
 echo "$VERS"
-PWS=`cat ~/pws/twine`
 python3 -m build -s
 python3 -m build -w
-python3 -m twine upload -u btpv -p $PWS dist/*
+python3 -m twine upload dist/*
 rm dist -r
 rm build -r
 rm src\\zermeloapi*
