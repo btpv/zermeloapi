@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: zermeloapi
-Version: 2023.11.23.20.29.21
+Version: 2024.1.8.9.17.46
 Summary: zermelo api
 Author: b.vill
 Author-email: villeriusborro@gmail.com
@@ -13,7 +13,7 @@ License-File: LICENSE
 Requires-Dist: datetime
 Requires-Dist: requests
 
-# zermelo api v:2023.11.23.20.29.21
+# zermelo api v:2024.01.08.09.17.46
 ![GitHub Logo](https://ozhw.zportal.nl/static/v/21.09j64/img/zermelo2013.svg)
 # documentation
 
@@ -46,12 +46,12 @@ again if u wand to u can give the school and username again but u don't need to 
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=47)`,`get_schedule(year=2023)`or`get_schedule(year=2023,week=47)`
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=02)`,`get_schedule(year=2024)`or`get_schedule(year=2024,week=02)`
 ## get schedule
 ```python
 raw_schedule = zermelo.get_schedule()
 ```
-u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=47)`,`get_schedule(year=2023)`or`get_schedule(year=2023,week=47)`and u you can pass a rawshedule from get_raw_shedule()
+u can give the week number and or year of u wand to else it uses the current year/week u can use `get_schedule(week=02)`,`get_schedule(year=2024)`or`get_schedule(year=2024,week=02)`and u you can pass a rawshedule from get_raw_shedule()
 ## sort schedule
 ```python
 sorted_schedule = zermelo.sort_schedule()
@@ -117,7 +117,6 @@ class zermelo:
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
         x = requests.post(url, data=myobj,allow_redirects=False)
         respons = x.headers['Location']
-        print(x.headers['Location'])
         # exit(0)
         if self.debug:
             print(x.text)
@@ -178,7 +177,7 @@ class zermelo:
         if week == None:
             week = time[1]
         if username == None:
-            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week:0>2}"
         else:
             start = str(datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp())[0:-2]
             end = str(datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp())[0:-2]

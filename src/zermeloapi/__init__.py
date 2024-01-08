@@ -46,7 +46,6 @@ class zermelo:
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
         x = requests.post(url, data=myobj,allow_redirects=False)
         respons = x.headers['Location']
-        print(x.headers['Location'])
         # exit(0)
         if self.debug:
             print(x.text)
@@ -107,7 +106,7 @@ class zermelo:
         if week == None:
             week = time[1]
         if username == None:
-            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week}"
+            url = f"https://{self.school}.zportal.nl/api/v3/liveschedule?access_token={self.token}&{'teacher' if (self.teacher) else 'student'}={self.username}&week={year}{week:0>2}"
         else:
             start = str(datetime.datetime.strptime(f"{year}-{week}-0","%Y-%U-%w").timestamp())[0:-2]
             end = str(datetime.datetime.strptime(f"{year}-{week}-6","%Y-%U-%w").timestamp())[0:-2]
