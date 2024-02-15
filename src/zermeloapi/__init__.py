@@ -45,10 +45,13 @@ class zermelo:
         myobj = {'username': username, 'password': password, 'client_id': 'OAuthPage', 'redirect_uri': '/main/',
                  'scope': '', 'state': '4E252A', 'response_type': 'code', 'tenant': school}
         x = requests.post(url, data=myobj,allow_redirects=False)
-        respons = x.headers['Location']
-        # exit(0)
         if self.debug:
             print(x.text)
+        try:
+            respons = x.headers['Location']
+        except:
+            respons = x.text
+        # exit(0)
             # exit(0)
         start = respons.find("code=") + len("code=")
         end = respons.find("&", start)
@@ -69,12 +72,15 @@ class zermelo:
             school = self.school
         if(token == None):
             token = self.get_token()
-        print(token)
+        if self.debug:    
+            print(token)
         url = 'https://' + school+'.zportal.nl/api/'+self.version+'/oauth/token'
         myobj = {'code': token, 'client_id': 'ZermeloPortal', 'client_secret': 42,
                  'grant_type': 'authorization_code', 'rememberMe': False}
-        print("\n\n")
-        print(myobj,url)
+        if self.debug:    
+            print("\n\n")
+        if self.debug:    
+            print(myobj,url)
         l = requests.post(url, data=myobj)
         if self.debug:
             print(l.text)
@@ -133,7 +139,7 @@ class zermelo:
         if(schedule == None):
             schedule = self.get_schedule(year=year, week=week,username=username,teacher=teacher)
         pdate = 0
-        days = [[[], []]]
+        days = [[[], [], []]]
         thisweek = {}
         for les in schedule:
             date = datetime.datetime.utcfromtimestamp(les["start"]).strftime('%Y%m%d')
@@ -164,16 +170,23 @@ class zermelo:
                                     str(les["locations"]), [{"code":code}], False])
             else:
                 if date != pdate:
-                    days.append([[], []])
+                    days.append([[], [], []])
                 if self.debug:
-                    print(les)
-                if not (les == None or len(les["status"]) < 1):
-                    if (les["status"][0]["code"] < 3000 and les["status"][0]["code"] >= 2000):
-                        days[-1][0].append([les["subjects"][0], time, etime,
-                                            str(les["locations"]), les["status"], les["online"]])
-                    else:
-                        days[-1][1].append([les["subjects"][0], time, etime,
-                                            str(les["locations"]), les["status"], les["online"]])
+                    print(les)#,les["appointmentType"])
+                    # pass
+                
+                for appointment in (les["actions"] if les["appointmentType"] == "choice" else [{'appointment': les,'status':les['status']}]):
+                    app = appointment["appointment"]
+                    if app != None and (len(appointment["status"]) > 0):
+                        if (appointment["status"][0]["code"] < 4000 and appointment["status"][0]["code"] >= 2000):
+                            days[-1][0].append([app["subjects"][0], time, etime,
+                                                str(app["locations"]), appointment["status"], app["online"],"",app["id"]])
+                        elif (appointment["status"][0]["code"] == 1004):
+                            days[-1][2].append([app["subjects"][0], time, etime,
+                                                str(app["locations"]), appointment["status"], app["online"],appointment["post"],app["id"]])
+                        else:
+                            days[-1][1].append([app["subjects"][0], time, etime,
+                                                str(app["locations"]), appointment["status"], app["online"],"",app["id"]])
             pdate = date
         if username != None:
             thisweekdayssorted = [thisweek[i] for i in [str(c) for c in sorted([int(i) for i in thisweek.keys()])]]
@@ -186,7 +199,26 @@ class zermelo:
         else:
             days.pop(0)
         return(days)
-
+    def enroll(self,les=None,lesid=0):
+        if les == None and lesid == 0:
+            return False
+        url = f"https://{self.school}.zportal.nl{les[6] if lesid == 0 else f'/api/v3/liveschedule/enrollment?enroll={lesid}'}&access_token={self.token}"
+        if self.debug:    
+            print(url)
+        req = requests.post(url)
+        if self.debug:
+            print(req,req.text)
+        return True
+    def unenroll(self,les=None,lesid=0):
+        if les == None and lesid == 0:
+            return False
+        url = f"https://{self.school}.zportal.nl{str(les[6]).replace('&unenroll=','').replace('enroll','unenroll') if lesid == 0 else f'/api/v3/liveschedule/enrollment?unenroll={lesid}'}&access_token={self.token}"
+        if self.debug:    
+            print(url)
+        req = requests.post(url)
+        if self.debug:
+            print(req,req.text)
+        return True
     def readable_schedule(self, days=None, year=None, week=None,username=None,teacher=None):
         result = ''
         if(days == None):
@@ -198,8 +230,8 @@ class zermelo:
             else:
                 result += (f"{daysofweek[i]}\n")
             for les in day[0]:
-                if (les[4][0]["code"] < 4000 and les[4][0]["code"] >= 2000):
-                # if True:
+                # if (les[4][0]["code"] < 4000 and les[4][0]["code"] >= 2000):
+                if True:
                     result += f"les: {les[0].ljust(8, ' ')}  lokaal: {('📷'if(les[5])else (les[3][2:-2]if(len(les[3][2:-2]) > 0)else '----')).ljust(8, ' ')}  start: {les[1]}\tend: {les[2]}\n"
                     pass
             result += ("\n\n")
